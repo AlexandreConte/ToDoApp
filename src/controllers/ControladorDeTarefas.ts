@@ -4,14 +4,10 @@ import Controlador from "./Controlador";
 
 export default class ControladorDeTarefas extends Controlador {
   constructor(
-    private readonly _telaDeTarefas: TelaDeTarefas = new TelaDeTarefas(),
-    private readonly _tarefas: Tarefa[] = []
+    private readonly _telaDeTarefas = TelaDeTarefas,
+    private _tarefas: Tarefa[] = []
   ) {
     super()
-  }
-
-  get telaDetarefas() {
-    return this._telaDeTarefas
   }
 
   get tarefas() {
@@ -21,7 +17,7 @@ export default class ControladorDeTarefas extends Controlador {
   abrirTela() {
     this.abrir()
     while (this.manterAberto) {
-      const opcao = this.telaDetarefas.mostrarMenu()
+      const opcao = this._telaDeTarefas.mostrarMenu()
       switch (opcao) {
         case "1":
           this.cadastrarTarefa()
@@ -36,7 +32,7 @@ export default class ControladorDeTarefas extends Controlador {
           break
 
         case "4":
-          this.imprimirTarefa()
+          this.imprimirTarefas()
           break
 
         case "0":
@@ -48,25 +44,34 @@ export default class ControladorDeTarefas extends Controlador {
   }
 
   cadastrarTarefa() {
-    const { titulo, prazo } = this.telaDetarefas.cadastrarTarefa()
+    const { titulo, prazo } = this._telaDeTarefas.cadastrarTarefa()
     const tarefa = new Tarefa(titulo, prazo)
     this.tarefas.push(tarefa)
   }
 
   editarTitulo() {
-    this.imprimirTarefa()
-    const id = this.telaDetarefas.pegarId()
+    this.imprimirTarefas()
+    const id = this._telaDeTarefas.pegarId()
     const tarefa = this.pegarPorId(id)
-    const titulo = this.telaDetarefas.pedir("Novo Título: ")
+    const titulo = this._telaDeTarefas.pedir("Novo Título: ")
     try {
       tarefa!.titulo = titulo
     } catch {
-      this.telaDetarefas.imprimir("Erro ao alterar o titulo da tarefa!")
+      this._telaDeTarefas.imprimir("Erro ao alterar o titulo da tarefa!")
     }
   }
 
-  imprimirTarefa() {
-    this.tarefas.map(t => this.telaDetarefas.imprimirTarefa(t))
+  imprimirTarefas() {
+    this.tarefas.map(t => this._telaDeTarefas.imprimirTarefa(t))
+  }
+
+  imprimirTarefa(tarefa: Tarefa) {
+    if (tarefa) {
+      this._telaDeTarefas.imprimir(`${tarefa.titulo} - ID: ${tarefa.Id} | ${tarefa.prazo}`)
+      this._telaDeTarefas.imprimir("")
+    } else {
+      this._telaDeTarefas.imprimir("Nenhuma tarefa cadastrada na lista!")
+    }
   }
 
   pegarPorId(id: string): Tarefa | undefined {
@@ -74,7 +79,7 @@ export default class ControladorDeTarefas extends Controlador {
   }
 
   excluirTarefa() {
-    const id = this.telaDetarefas.pedir("Id da tarefa: ")
+    const id = this._telaDeTarefas.pedir("Id da tarefa: ")
     const tarefa = this.pegarPorId(id)
     const index = this.pegarIndice(id)
     if (tarefa) {
