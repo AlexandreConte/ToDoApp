@@ -1,13 +1,14 @@
 import Prompt from "prompt-sync"
 import Tarefa from "../models/Tarefa"
 import Data from "../models/Data"
+import Tela from "./Tela"
 
-export default class TelaDeTarefas {
-  private prompt = Prompt()
-  
-  constructor() { }
+export default class TelaDeTarefas extends Tela {  
+  constructor() { 
+    super()
+  }
 
-  mostrarMenu(): "1" | "2" | "3" | "4" | "0" {
+  static mostrarMenu(): "1" | "2" | "3" | "4" | "0" {
     console.log("-- Tela de Tarefas --")
     console.log("1 - Cadastrar uma nova tarefa")
     console.log("2 - Editar uma tarefa existente")
@@ -15,6 +16,7 @@ export default class TelaDeTarefas {
     console.log("4 - Imprimir uma tarefa")
     console.log("0 - Voltar")
     let opcao = this.prompt("Sua opção: ")
+    console.log()
     while (
       opcao !== "0" &&
       opcao !== "1" &&
@@ -28,7 +30,7 @@ export default class TelaDeTarefas {
     return opcao
   }
 
-  cadastrarTarefa(): { titulo: string, prazo: Data | null } {
+  static cadastrarTarefa(): { titulo: string, prazo: Data | null } {
     console.log("-- Cadastro de Tarefa --");
     const titulo: string = this.prompt("Título: ")
     let prazo: Data | null = null
@@ -51,22 +53,22 @@ export default class TelaDeTarefas {
     return { titulo, prazo }
   }
 
-  imprimirTarefa(tarefa: Tarefa): void {
+  static imprimirTarefa(tarefa: Tarefa): void {
     if (tarefa.prazo !== null)
       console.log(`Tarefa: ${tarefa.titulo} - ${tarefa.prazo?.formatar() ?? ""} ID: ${tarefa.Id}`)
     else
       console.log(`Tarefa: ${tarefa.titulo} - ID ${tarefa.Id}`)
   }
 
-  pegarId(): string {
+  static pegarId(): string {
     return this.prompt("Digite o ID da tarefa: ")
   }
 
-  imprimir(mensagem: string) {
+  static imprimir(mensagem: string) {
     console.log(mensagem)
   }
 
-  pedir(mensagem: string) {
+  static pedir(mensagem: string) {
     return this.prompt(mensagem)
   }
 }
