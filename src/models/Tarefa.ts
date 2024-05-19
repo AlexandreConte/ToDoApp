@@ -1,73 +1,81 @@
-import InvalidtituloError from "../../errors/ErroTituloInvalido";
-import Entidade from "./Entidade";
+import ErroTituloInvalido from "../../errors/ErroTituloInvalido"
+import Data from "./Data"
+import Entidade from "./Entidade"
 
-export interface TarefaProps {
-  get titulo(): string
-  get prazo(): Date | null
-  get dataCriacao(): Date | null
-  get completo(): boolean
-  set titulo(titulo: string)
-  set prazo(prazo: Date)
-  completar(): void
-  descompletar(): void
-}
-
-export default class Tarefa extends Entidade implements TarefaProps {
+export default class Tarefa extends Entidade {
   private _titulo: string
-  private _prazo: Date | null
-  private _dataCriacao: Date | null
-  private _completo: boolean
+  private _dataDeCriacao: Data | null
+  private _estaCompleto: boolean
+  private _prazo: Data | null = null
 
   constructor(
     titulo: string,
-    prazo?: Date | null,
-    dataCriacao: Date = new Date(Date.now()),
-    completo: boolean = false,
+    prazo?: Data | null,
   ) {
-    super();
-    this._titulo = titulo;
-    this._completo = completo;
-    this._dataCriacao = dataCriacao ?? null;
-    this._prazo = prazo ?? null;
+    super()
+    this._titulo = titulo
+    this._prazo = prazo ?? null
+    this._dataDeCriacao = new Data()
+    this._estaCompleto = false
   }
 
   get titulo(): string {
     return this._titulo
   }
 
-  get prazo(): Date | null {
+  get prazo(): Data | null {
     return this._prazo
   }
 
-  get dataCriacao(): Date | null {
-    return this._dataCriacao
+  get dataDeCriacao(): Data | null {
+    return this._dataDeCriacao
   }
 
-  get completo(): boolean {
-    return this._completo
+  get estaCompleto(): boolean {
+    return this._estaCompleto
   }
 
   set titulo(titulo: string) {
     if (titulo === undefined || titulo === null || titulo.trim() === "")
-      throw new InvalidtituloError();
-    else 
+      throw new ErroTituloInvalido()
+    else
       this._titulo = titulo
   }
 
   set prazo(prazo: Date) {
     try {
-      const date: Date = new Date(prazo)
-      this._prazo = date
-    } catch (error) {
-      
+      const data: Date = new Date(prazo)
+      this._prazo = new Data(data)
+    } catch {
+      console.log("Data inválida!")
     }
   }
 
   completar() {
-    this._completo = true
+    this._estaCompleto = true
   }
 
   descompletar() {
-    this._completo = false
+    this._estaCompleto = false
+  }
+
+  alternarEstaCompleto() {
+    this._estaCompleto = !this._estaCompleto
+  }
+
+  get dataFormatada() {
+    const ano = this.prazo?.date?.getFullYear()
+    const mes = this.prazo?.date?.getMonth()
+    const dia = this.prazo?.date?.getDate()
+    
+    const hora = this.prazo?.date?.getHours()
+    const minuto = this.prazo?.date?.getMinutes()
+    const segundo = this.prazo?.date?.getSeconds()
+    let formatado = ""
+    if (ano) 
+      formatado += `${dia}/${mes}/${ano}`
+    if (segundo)
+      formatado += ` ${hora}:${minuto ?? "00"}:${segundo ?? "00"}`
+    return formatado
   }
 }
