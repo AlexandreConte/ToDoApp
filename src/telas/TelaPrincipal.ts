@@ -1,3 +1,4 @@
+// Telas
 import Tela from "./Tela"
 
 export default class TelaPrincipal extends Tela {
