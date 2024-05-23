@@ -1,4 +1,5 @@
-import ControladorPrincipal from "./controllers/ControladorPrincipal";
+// Controlador
+import ControladorPrincipal from "./controladores/ControladorPrincipal"
 
 const controladorPrincipal = new ControladorPrincipal()
 controladorPrincipal.abrirTela()
