@@ -1,4 +1,4 @@
-import Tela from "./Tela";
+import Tela from "./Tela"
 
 export default class TelaPrincipal extends Tela {
   constructor() {

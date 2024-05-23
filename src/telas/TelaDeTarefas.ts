@@ -1,10 +1,8 @@
-import Prompt from "prompt-sync"
-import Tarefa from "../models/Tarefa"
-import Data from "../models/Data"
+// Tela
 import Tela from "./Tela"
 
-export default class TelaDeTarefas extends Tela {  
-  constructor() { 
+export default class TelaDeTarefas extends Tela {
+  constructor() {
     super()
   }
 
@@ -13,7 +11,7 @@ export default class TelaDeTarefas extends Tela {
     console.log("1 - Cadastrar uma nova tarefa")
     console.log("2 - Editar uma tarefa existente")
     console.log("3 - Excluir uma tarefa")
-    console.log("4 - Imprimir uma tarefa")
+    console.log("4 - Imprimir tarefas")
     console.log("0 - Voltar")
     let opcao = this.prompt("Sua opção: ")
     console.log()
@@ -30,13 +28,12 @@ export default class TelaDeTarefas extends Tela {
     return opcao
   }
 
-  static cadastrarTarefa(): { titulo: string, prazo: Data | null } {
+  static cadastrarTarefa(): { titulo: string, prazo: Date | null } {
     console.log("-- Cadastro de Tarefa --");
     const titulo: string = this.prompt("Título: ")
-    let prazo: Data | null = null
+    let prazo: Date | null = null
     const prazoInput = this.prompt(`Prazo (Formato: dd/MM/yyyy hh:mm:ss) `)
     try {
-      console.log(prazoInput.split("/")?.[0])
       const dia = prazoInput.split("/")?.[0]
       const mes = prazoInput.split("/")?.[1]
       const ano = prazoInput.split("/")?.[2]
@@ -44,7 +41,7 @@ export default class TelaDeTarefas extends Tela {
       const minuto = prazoInput.split(" ")?.[0].split(":")[1]
       const segundo = prazoInput.split(" ")?.[0].split(":")[2]
       if (ano)
-        prazo = new Data(new Date(+ano, +mes, +dia, +hora, +minuto, +segundo))
+        prazo = new Date(+ano, +mes, +dia, +hora, +minuto, +segundo)
       else
         prazo = null
     } catch {
@@ -53,11 +50,8 @@ export default class TelaDeTarefas extends Tela {
     return { titulo, prazo }
   }
 
-  static imprimirTarefa(tarefa: Tarefa): void {
-    if (tarefa.prazo !== null)
-      console.log(`Tarefa: ${tarefa.titulo} - ${tarefa.prazo?.formatar() ?? ""} ID: ${tarefa.Id}`)
-    else
-      console.log(`Tarefa: ${tarefa.titulo} - ID ${tarefa.Id}`)
+  static imprimirTarefa(titulo: string, prazoFormatado: string, id: string, estaCompletoFormatado: string): void {
+    console.log(`Tarefa:\n${titulo}\nPrazo: ${prazoFormatado}\nID: ${id}\nConcluído: ${estaCompletoFormatado}`)
   }
 
   static pegarId(): string {
@@ -68,7 +62,24 @@ export default class TelaDeTarefas extends Tela {
     console.log(mensagem)
   }
 
+  static pedirPorId() {
+    return this.prompt("ID da tarefa a ser selecionado: ")
+  }
+
   static pedir(mensagem: string) {
     return this.prompt(mensagem)
+  }
+
+  static imprimirNaoEncontrouTarefa() {
+    console.log("Tarefa não encontrada!")
+  }
+
+  static imprimirSemTarefasCadastradas() {
+    console.log("Não há tarefas cadastradas!")
+  }
+
+  static imprimirErro(e?: any) {
+    console.log("Erro Desconhecido:")
+    console.log(e ?? "")
   }
 }

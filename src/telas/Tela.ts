@@ -18,4 +18,8 @@ export default class Tela {
   static pedir(mensagem: string) {
     return this.prompt(mensagem)
   }
+
+  static esperarInteracao() {
+    this.prompt("Aperte 'enter' para continuar: ")
+  }
 }
