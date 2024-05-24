@@ -2,13 +2,19 @@
 import Entidade from "./Entidade"
 import Tarefa from "./Tarefa"
 
-export default class Lista extends Entidade {
+// Interafaces
+import ListaProps from "../interface/ListaProps"
+import ErroTituloInvalido from "../erros/ErroTituloInvalido"
+import ErroTituloVazio from "../erros/ErroTituloVazio"
+
+export default class ListaDeTarefas extends Entidade implements ListaProps {
   private _titulo: string
   constructor(
     titulo: string,
     private _tarefas: Tarefa[] = []
   ) {
     super()
+    this.validarTitulo(titulo)
     this._titulo = titulo
   }
 
@@ -21,6 +27,7 @@ export default class Lista extends Entidade {
   }
 
   set titulo(titulo: string) {
+    this.validarTitulo(titulo)
     this._titulo = titulo
   }
 
@@ -36,5 +43,14 @@ export default class Lista extends Entidade {
     const tarefa = this.tarefas.find(t => t.id === id)
     const index = this.tarefas.findIndex(t => t === tarefa)
     return index
+  }
+
+  private validarTitulo(titulo: string) {
+    if (titulo.trim().length === 0) {
+      throw new ErroTituloVazio()
+    }
+    if (typeof titulo !== "string") {
+      throw new ErroTituloInvalido()
+    }
   }
 }

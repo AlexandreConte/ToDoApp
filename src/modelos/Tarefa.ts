@@ -4,21 +4,27 @@ import Entidade from "./Entidade"
 
 // Erros:
 import ErroTituloVazio from "../erros/ErroTituloVazio"
+import ErroTituloInvalido from "../erros/ErroTituloInvalido"
+import TarefaProps from "../interface/Tarefa"
 
-export default class Tarefa extends Entidade {
+export default class Tarefa extends Entidade implements TarefaProps {
   private _titulo: string
-  private _dataDeCriacao: Data | null
+  private _dataDeCriacao: Data
   private _estaCompleto: boolean
-  private _prazo: Data | null = null
+  private _prazo: Data
 
   constructor(
     titulo: string,
-    prazo?: Data | null,
+    prazo?: Date | null,
   ) {
     super()
     this._titulo = titulo
-    this._prazo = prazo ?? null
-    this._dataDeCriacao = new Data()
+    if (prazo === null) {
+      this._prazo = new Data(null)
+    } else {
+      this._prazo = new Data(new Date(prazo!))
+    }
+    this._dataDeCriacao = new Data(new Date())
     this._estaCompleto = false
   }
 
@@ -30,8 +36,8 @@ export default class Tarefa extends Entidade {
     return this._prazo?.formatado ?? "Sem prazo"
   }
 
-  get dataDeCriacao(): Data | null {
-    return this._dataDeCriacao
+  get dataDeCriacaoFormatada(): string {
+    return this._dataDeCriacao.formatado
   }
 
   get estaCompleto(): boolean {
@@ -43,10 +49,8 @@ export default class Tarefa extends Entidade {
   }
 
   set titulo(titulo: string) {
-    if (titulo === undefined || titulo === null || titulo.trim() === "")
-      throw new ErroTituloVazio()
-    else
-      this._titulo = titulo
+    this.validarTitulo(titulo)
+    this._titulo = titulo
   }
 
   set prazo(prazo: Date) {
@@ -68,5 +72,14 @@ export default class Tarefa extends Entidade {
 
   alternarEstaCompleto() {
     this._estaCompleto = !this._estaCompleto
+  }
+
+  private validarTitulo(titulo: string) {
+    if (titulo.trim().length === 0) {
+      throw new ErroTituloVazio()
+    }
+    if (titulo === undefined || titulo === null) {
+      throw new ErroTituloInvalido()
+    }
   }
 }
