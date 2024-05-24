@@ -11,12 +11,8 @@ export default class Tela {
 
   static mostrarMenu() {}
 
-  static imprimir(mensagem: string) {
+  static imprimirMensagem(mensagem: string) {
     console.log(mensagem)
-  }
-
-  static pedir(mensagem: string) {
-    return this.prompt(mensagem)
   }
 
   static esperarInteracao() {

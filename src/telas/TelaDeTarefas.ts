@@ -1,26 +1,37 @@
-// Tela
+// Telas
 import Tela from "./Tela"
+
+// Interfaces
+import TarefaProps from "../interface/Tarefa"
+
+// Enums
+import OpcoesDoMenuDeTarefas from "../enums/OpcoesDoMenuDeTarefas"
 
 export default class TelaDeTarefas extends Tela {
   constructor() {
     super()
   }
 
-  static mostrarMenu(): "1" | "2" | "3" | "4" | "0" {
+  static mostrarMenu(): OpcoesDoMenuDeTarefas {
+    console.log("")
     console.log("-- Tela de Tarefas --")
     console.log("1 - Cadastrar uma nova tarefa")
-    console.log("2 - Editar uma tarefa existente")
-    console.log("3 - Excluir uma tarefa")
-    console.log("4 - Imprimir tarefas")
+    console.log("2 - Imprimir tarefas")
+    console.log("3 - Editar o título de uma tarefa existente")
+    console.log("4 - Excluir uma tarefa")
+    console.log("5 - Concluir uma tarefa")
+    console.log("6 - Desmarcar a conclusão de uma tarefa")
     console.log("0 - Voltar")
     let opcao = this.prompt("Sua opção: ")
     console.log()
     while (
-      opcao !== "0" &&
-      opcao !== "1" &&
-      opcao !== "2" &&
-      opcao !== "3" &&
-      opcao !== "4"
+      opcao !== OpcoesDoMenuDeTarefas.Cadastrar &&
+      opcao !== OpcoesDoMenuDeTarefas.Imprimir &&
+      opcao !== OpcoesDoMenuDeTarefas.EditarTitulo &&
+      opcao !== OpcoesDoMenuDeTarefas.Excluir &&
+      opcao !== OpcoesDoMenuDeTarefas.Concluir &&
+      opcao !== OpcoesDoMenuDeTarefas.MarcarComoParaFazer &&
+      opcao !== OpcoesDoMenuDeTarefas.Voltar
     ) {
       console.log("Opção inválida!")
       opcao = this.prompt("Sua opção: ")
@@ -28,46 +39,62 @@ export default class TelaDeTarefas extends Tela {
     return opcao
   }
 
-  static cadastrarTarefa(): { titulo: string, prazo: Date | null } {
-    console.log("-- Cadastro de Tarefa --");
-    const titulo: string = this.prompt("Título: ")
-    let prazo: Date | null = null
-    const prazoInput = this.prompt(`Prazo (Formato: dd/MM/yyyy hh:mm:ss) `)
-    try {
-      const dia = prazoInput.split("/")?.[0]
-      const mes = prazoInput.split("/")?.[1]
-      const ano = prazoInput.split("/")?.[2]
-      const hora = prazoInput.split(" ")?.[0].split(":")[0]
-      const minuto = prazoInput.split(" ")?.[0].split(":")[1]
-      const segundo = prazoInput.split(" ")?.[0].split(":")[2]
-      if (ano)
-        prazo = new Date(+ano, +mes, +dia, +hora, +minuto, +segundo)
-      else
-        prazo = null
-    } catch {
-      console.log(`Digite uma data válida!`)
-    }
-    return { titulo, prazo }
-  }
-
-  static imprimirTarefa(titulo: string, prazoFormatado: string, id: string, estaCompletoFormatado: string): void {
-    console.log(`Tarefa:\n${titulo}\nPrazo: ${prazoFormatado}\nID: ${id}\nConcluído: ${estaCompletoFormatado}`)
-  }
-
-  static pegarId(): string {
-    return this.prompt("Digite o ID da tarefa: ")
-  }
-
-  static imprimir(mensagem: string) {
-    console.log(mensagem)
+  static pedirTitulo(): string {
+    return this.prompt("Título da tarefa: ")
   }
 
   static pedirPorId() {
     return this.prompt("ID da tarefa a ser selecionado: ")
   }
 
-  static pedir(mensagem: string) {
-    return this.prompt(mensagem)
+  static cadastrarTarefa(): { titulo: string, prazo: Date | null } {
+    console.log("")
+    console.log("-- Cadastro de Tarefa --")
+    const titulo: string = this.prompt("Título: ")
+    const prazoInput = this.prompt(`Prazo (Formato: dd/MM/yyyy hh:mm:ss): `)
+    let prazo: Date | null = null
+    try {
+      const dia = prazoInput.split(" ")?.[0]?.split("/")[0]
+      const mes = prazoInput.split(" ")?.[0]?.split("/")[1] ?? new Date().getMonth()
+      const ano = prazoInput.split(" ")?.[0]?.split("/")[2] ?? new Date().getFullYear()
+      const hora = prazoInput.split(" ")?.[1]?.split(":")?.[0] ?? 0
+      const minuto = prazoInput.split(" ")?.[1]?.split(":")?.[1] ?? 0
+      const segundo = prazoInput.split(" ")?.[1]?.split(":")?.[2] ?? 0
+      if (segundo) {
+        prazo = new Date(+ano, +mes - 1, +dia, +hora, +minuto, +segundo)
+        return { titulo, prazo }
+      }
+      if (minuto) {
+        prazo = new Date(+ano, +mes - 1, +dia, +hora, +minuto)
+        return { titulo, prazo }
+      }
+      if (hora) {
+        prazo = new Date(+ano, +mes - 1, +dia, +hora)
+        return { titulo, prazo }
+      }
+      const semData = !dia
+      if (semData) {
+        prazo = null
+      }
+      prazo = new Date(+ano, +mes - 1, +dia)
+      return { titulo, prazo }
+    } catch {
+      console.log(`Digite uma data válida!`)
+    }
+    return { titulo, prazo }
+  }
+
+  static imprimirTarefas(tarefas: TarefaProps[]) {
+    tarefas.map(tarefa => this.imprimirTarefa(tarefa))
+  }
+
+  static imprimirTarefa(tarefa: TarefaProps): void {
+    console.log("Tarefa: ", tarefa.titulo)
+    console.log("Tarefa Concluída? ", tarefa.estaCompletoFormatado)
+    console.log("Prazo formatado: ", tarefa.prazoFormatado)
+    console.log("Data de criação: ", tarefa.dataDeCriacaoFormatada)
+    console.log("Id: ", tarefa.id)
+    console.log()
   }
 
   static imprimirNaoEncontrouTarefa() {
@@ -78,8 +105,19 @@ export default class TelaDeTarefas extends Tela {
     console.log("Não há tarefas cadastradas!")
   }
 
-  static imprimirErro(e?: any) {
-    console.log("Erro Desconhecido:")
-    console.log(e ?? "")
+  static imprimirMensagemDeNenhumaTarefaCadastrada() {
+    console.log("Nenhuma tarefa cadastrada no sistema! Procedimento cancelado...")
+  }
+
+  static imprimirMensagemDeTituloInvalido() {
+    console.log("Título Inválido! Procedimento cancelado...")
+  }
+
+  static imprimirMensagemDeTituloVazio() {
+    console.log("Título vazio! Procedimento cancelado...")
+  }
+
+  static imprimirMensagemDeTarefaNaoEncontrada() {
+    console.log("Tarefa não encontrada! Procedimento cancelado...")
   }
 }

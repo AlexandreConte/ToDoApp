@@ -1,16 +1,23 @@
 // Telas
 import Tela from "./Tela"
 
+// Interfaces
+import ListaProps from "../interface/ListaProps"
+import TarefaProps from "../interface/Tarefa"
+
+// Enums 
+import OpcoesDoMenuDeListas from "../enums/OpcoesDoMenuDeListas"
+
 export default class TelaDeListas extends Tela {
   constructor() {
     super()
   }
 
-  static mostrarMenu(): "1" | "2" | "3" | "4" | "5" | "0" {
+  static mostrarMenu(): OpcoesDoMenuDeListas {
     console.log()
     console.log("-- Tela de listas --")
-    console.log("1 - Mostrar listas")
-    console.log("2 - Cadastrar nova lista")
+    console.log("1 - Cadastrar nova lista")
+    console.log("2 - Mostrar listas")
     console.log("3 - Editar o título de uma lista")
     console.log("4 - Excluir uma lista")
     console.log("5 - Mover tarefa existente para uma lista")
@@ -19,12 +26,12 @@ export default class TelaDeListas extends Tela {
     let opcao = this.prompt("Sua opção: ")
     console.log()
     while (
-      opcao !== "1" &&
-      opcao !== "2" &&
-      opcao !== "3" &&
-      opcao !== "4" &&
-      opcao !== "5" &&
-      opcao !== "0"
+      opcao !== OpcoesDoMenuDeListas.CadastrarNovaLista &&
+      opcao !== OpcoesDoMenuDeListas.MostrarListas &&
+      opcao !== OpcoesDoMenuDeListas.EditarTituloDeLista &&
+      opcao !== OpcoesDoMenuDeListas.ExcluirLista &&
+      opcao !== OpcoesDoMenuDeListas.MoverUmaTarefaParaLista &&
+      opcao !== OpcoesDoMenuDeListas.Voltar
     ) {
       console.log("Opção inválida!")
       opcao = this.prompt("Sua opção: ")
@@ -38,44 +45,45 @@ export default class TelaDeListas extends Tela {
     return { titulo }
   }
 
-  static imprimirLista(titulo: string, id: string) {
+  static imprimirLista(lista: ListaProps) {
+    const { titulo, id } = lista
     console.log(`Lista: ${titulo} - ID: ${id}`)
   }
 
   static excluirLista(): { id: string } {
     console.log("-- Excluir uma lista existente --")
-    const id = this.pedir("Id da lista: ")
+    const id = this.pedirPorId()
     return { id }
   }
 
-  static pedir(mensagem: string): string {
-    return this.prompt(mensagem)
+  static pedirPorId(): string {
+    return this.prompt("Id da lista: ")
   }
 
-  static imprimirTarefaDaLista(titulo: string, prazoFormatado: string, estaCompletoFormatado: string, id: string) {
-    console.log(titulo)
-    console.log("Prazo: " + prazoFormatado)
-    console.log("Conluída: " + estaCompletoFormatado)
-    console.log("Id: " + id)
+  static pedirTitulo(): string {
+    return this.prompt("Título da lista: ")
   }
 
-  static imprimirNenhumaListaCorrespondeComBusca() {
-    console.log("Lista procurada não encontrada!")
+  static pedirConfirmacao(): "s" | "n" {
+    const mensagem = "Digite 's' para Sim e 'n' para Não: "
+    let opcao = this.prompt(mensagem).trim().toLowerCase().charAt(0)
+    while (opcao !== "s" && opcao !== "n") {
+      console.log("Opção inválida! Tente novamente...")
+      opcao = this.prompt(mensagem).trim().toLowerCase().charAt(0)
+    }
+    return opcao
   }
 
-  static imprimirNenhumaListaEstaCadastrada() {
-    console.log("Nenhuma lista cadastrada!")
-  }
-
-  static imprimirListaEstaSemTarefas() {
-    console.log("A lista não possui tarefas cadastradas!")
-  }
-
-  static imprimirTituloInvalido() {
-    console.log("Título inválido!")
-  }
-
-  static imprimirListas() {
+  static imprimirListas(listas: ListaProps[]) {
     console.log("Listas cadastradas no sistema: ")
+    listas.forEach(lista => this.imprimirLista(lista))
+  }
+
+  static imprimirTarefaDaLista(tarefa: TarefaProps) {
+    console.log("Título: ", tarefa.titulo)
+    console.log("Prazo: ", tarefa.prazoFormatado)
+    console.log("Concluído: ", tarefa.estaCompletoFormatado)
+    console.log("Data de criação: ", tarefa.dataDeCriacaoFormatada)
+    console.log("Id: ", tarefa.id)
   }
 }

@@ -1,12 +1,15 @@
 // Telas
 import Tela from "./Tela"
 
+// Enums
+import OpcoesDoMenuPrincipal from "../enums/OpcoesDoMenuPrincipal"
+
 export default class TelaPrincipal extends Tela {
   constructor() {
     super()
-   }
+  }
 
-  static mostrarMenu(): "1" | "2" | "0" {
+  static mostrarMenu(): OpcoesDoMenuPrincipal {
     console.log()
     console.log("-- Tela Principal --")
     console.log("1 - Acessar tela de tarefas")
@@ -15,9 +18,9 @@ export default class TelaPrincipal extends Tela {
     let opcao = this.prompt("Sua opção: ")
     console.log()
     while (
-      opcao !== "1" &&
-      opcao !== "2" &&
-      opcao !== "0"
+      opcao !== OpcoesDoMenuPrincipal.AbrirTelaDeTarefas &&
+      opcao !== OpcoesDoMenuPrincipal.AbrirTelaDeListasDeTarefas &&
+      opcao !== OpcoesDoMenuPrincipal.Fechar
     ) {
       console.log("Opção Inválida!")
       opcao = this.prompt("Sua opção: ")
