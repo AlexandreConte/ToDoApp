@@ -1,7 +1,13 @@
-import TelaPrincipal from "../views/TelaPrincipal"
-import Controlador from "./Controlador";
-import ControladorDeListas from "./ControladorDeListas";
-import ControladorDeTarefas from "./ControladorDeTarefas";
+// Controladores
+import Controlador from "./Controlador"
+import ControladorDeListas from "./ControladorDeListas"
+import ControladorDeTarefas from "./ControladorDeTarefas"
+
+// Telas
+import TelaPrincipal from "../telas/TelaPrincipal"
+
+// Enums
+import OpcoesDoMenuPrincipal from "../enums/OpcoesDoMenuPrincipal"
 
 export default class ControladorPrincipal extends Controlador {
   constructor(
@@ -29,19 +35,17 @@ export default class ControladorPrincipal extends Controlador {
     while (this.manterAberto) {
       let opcao = this.telaPrincipal.mostrarMenu()
       switch (opcao) {
-        case "1":
+        case OpcoesDoMenuPrincipal.AbrirTelaDeTarefas:
           this.controladorDeTarefas.abrirTela()
           break
-  
-        case "2":
+        case OpcoesDoMenuPrincipal.AbrirTelaDeListasDeTarefas:
           this.controladorDeListas.abrirTela()
           break
-  
-        case "0":
+        case OpcoesDoMenuPrincipal.Fechar:
           this.fechar()
-  
+          break
         default:
-          break;
+          break
       }
     }
     console.log("Saindo do aplicação...")
