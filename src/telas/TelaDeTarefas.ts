@@ -52,29 +52,26 @@ export default class TelaDeTarefas extends Tela {
     console.log("-- Cadastro de Tarefa --")
     const titulo: string = this.prompt("Título: ")
     const prazoInput = this.prompt(`Prazo (Formato: dd/MM/yyyy hh:mm:ss): `)
+    const semPrazo = !prazoInput
+    if (semPrazo) {
+      return { titulo, prazo: null}
+    }
     let prazo: Date | null = null
     try {
-      const dia = prazoInput.split(" ")?.[0]?.split("/")[0]
-      const mes = prazoInput.split(" ")?.[0]?.split("/")[1] ?? new Date().getMonth()
-      const ano = prazoInput.split(" ")?.[0]?.split("/")[2] ?? new Date().getFullYear()
+      const dia = prazoInput.split(" ")?.[0]?.split("/")?.[0]
+      const mes = prazoInput.split(" ")?.[0]?.split("/")?.[1] ?? new Date().getMonth()
+      const ano = prazoInput.split(" ")?.[0]?.split("/")?.[2] ?? new Date().getFullYear()
       const hora = prazoInput.split(" ")?.[1]?.split(":")?.[0] ?? 0
       const minuto = prazoInput.split(" ")?.[1]?.split(":")?.[1] ?? 0
       const segundo = prazoInput.split(" ")?.[1]?.split(":")?.[2] ?? 0
       if (segundo) {
         prazo = new Date(+ano, +mes - 1, +dia, +hora, +minuto, +segundo)
-        return { titulo, prazo }
       }
       if (minuto) {
         prazo = new Date(+ano, +mes - 1, +dia, +hora, +minuto)
-        return { titulo, prazo }
       }
       if (hora) {
         prazo = new Date(+ano, +mes - 1, +dia, +hora)
-        return { titulo, prazo }
-      }
-      const semData = !dia
-      if (semData) {
-        prazo = null
       }
       prazo = new Date(+ano, +mes - 1, +dia)
       return { titulo, prazo }

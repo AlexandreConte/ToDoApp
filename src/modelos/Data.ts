@@ -2,7 +2,7 @@
 import ErroDataInvalida from "../erros/ErroDataInvalida"
 
 export default class Data {
-  private _date: Date | null
+  private _date: Date | null = null
 
   constructor(date: Date | null = null) {
     this._date = date
@@ -53,6 +53,9 @@ export default class Data {
   }
 
   private validarData(date: Date) {
+    if (date === null) {
+      return
+    }
     if (!(date instanceof Date) || isNaN(date?.getTime())) {
       throw new ErroDataInvalida()
     }

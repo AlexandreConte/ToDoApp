@@ -11,13 +11,14 @@ export default class Tarefa extends Entidade implements TarefaProps {
   private _titulo: string
   private _dataDeCriacao: Data
   private _estaCompleto: boolean
-  private _prazo: Data
+  private _prazo: Data | null = null
 
   constructor(
     titulo: string,
     prazo?: Date | null,
   ) {
     super()
+    this.validarTitulo(titulo)
     this._titulo = titulo
     if (prazo === null) {
       this._prazo = new Data(null)
