@@ -97,9 +97,10 @@ export default class ControladorDeTarefas extends Controlador {
     if (titulo.trim().length === 0) {
       throw new ErroTituloVazio()
     }
+    
     const semPrazo = !prazo
     if (semPrazo) {
-      const tarefa = new Tarefa(titulo)
+      const tarefa = new Tarefa(titulo, null)
       this.tarefas.push(tarefa)
       return tarefa
     }
