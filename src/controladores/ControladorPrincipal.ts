@@ -7,7 +7,7 @@ import ControladorDeTarefas from "./ControladorDeTarefas"
 import TelaPrincipal from "../telas/TelaPrincipal"
 
 // Enums
-import OpcoesDoMenuPrincipal from "../enums/OpcoesDoMenuPrincipal"
+import OpcoesDoMenuPrincipal from "../opcoesDeMenus/OpcoesDoMenuPrincipal"
 
 export default class ControladorPrincipal extends Controlador {
   constructor(
@@ -30,7 +30,7 @@ export default class ControladorPrincipal extends Controlador {
     return this._controladorDeListas
   }
 
-  abrirTela() {
+  abrirTela(): void {
     this.abrir()
     while (this.manterAberto) {
       let opcao = this.telaPrincipal.mostrarMenu()
