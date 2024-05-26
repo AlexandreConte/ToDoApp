@@ -1,4 +1,4 @@
-export default class Controlador {
+export default abstract class Controlador {
   constructor(
     private _manterAberto: boolean = true,
   ) { }
