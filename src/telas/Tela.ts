@@ -1,6 +1,6 @@
 import Prompt from "prompt-sync";
 
-export default class Tela {
+export default abstract class Tela {
   private static _prompt = Prompt()
   
   constructor() { }

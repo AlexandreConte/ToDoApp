@@ -2,7 +2,7 @@
 import Tela from "./Tela"
 
 // Enums
-import OpcoesDoMenuPrincipal from "../enums/OpcoesDoMenuPrincipal"
+import OpcoesDoMenuPrincipal from "../opcoesDeMenus/OpcoesDoMenuPrincipal"
 
 export default class TelaPrincipal extends Tela {
   constructor() {
@@ -17,14 +17,11 @@ export default class TelaPrincipal extends Tela {
     console.log("0 - Sair da aplicação")
     let opcao = this.prompt("Sua opção: ")
     console.log()
-    while (
-      opcao !== OpcoesDoMenuPrincipal.AbrirTelaDeTarefas &&
-      opcao !== OpcoesDoMenuPrincipal.AbrirTelaDeListasDeTarefas &&
-      opcao !== OpcoesDoMenuPrincipal.Fechar
-    ) {
+    const opcoesValidas = Object.values(OpcoesDoMenuPrincipal) 
+    while (!opcoesValidas.includes(opcao as OpcoesDoMenuPrincipal)) {
       console.log("Opção Inválida!")
-      opcao = this.prompt("Sua opção: ")
+      opcao = this.prompt("Sua opção: ") as OpcoesDoMenuPrincipal
     }
-    return opcao
+    return opcao as OpcoesDoMenuPrincipal
   }
 }

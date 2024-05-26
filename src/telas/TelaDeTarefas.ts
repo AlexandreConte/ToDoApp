@@ -2,10 +2,10 @@
 import Tela from "./Tela"
 
 // Interfaces
-import TarefaProps from "../interface/Tarefa"
+import TarefaProps from "../interfaces/TarefaProps"
 
 // Enums
-import OpcoesDoMenuDeTarefas from "../enums/OpcoesDoMenuDeTarefas"
+import OpcoesDoMenuDeTarefas from "../opcoesDeMenus/OpcoesDoMenuDeTarefas"
 
 export default class TelaDeTarefas extends Tela {
   constructor() {
@@ -22,29 +22,27 @@ export default class TelaDeTarefas extends Tela {
     console.log("5 - Concluir uma tarefa")
     console.log("6 - Desmarcar a conclusão de uma tarefa")
     console.log("0 - Voltar")
+    const opcoesValidas = Object.values(OpcoesDoMenuDeTarefas)
+    
     let opcao = this.prompt("Sua opção: ")
     console.log()
-    while (
-      opcao !== OpcoesDoMenuDeTarefas.Cadastrar &&
-      opcao !== OpcoesDoMenuDeTarefas.Imprimir &&
-      opcao !== OpcoesDoMenuDeTarefas.EditarTitulo &&
-      opcao !== OpcoesDoMenuDeTarefas.Excluir &&
-      opcao !== OpcoesDoMenuDeTarefas.Concluir &&
-      opcao !== OpcoesDoMenuDeTarefas.MarcarComoParaFazer &&
-      opcao !== OpcoesDoMenuDeTarefas.Voltar
-    ) {
+    while (!opcoesValidas.includes(opcao as OpcoesDoMenuDeTarefas)) {
       console.log("Opção inválida!")
-      opcao = this.prompt("Sua opção: ")
+      opcao = this.prompt("Sua opção: ") as OpcoesDoMenuDeTarefas
     }
-    return opcao
+    return opcao as OpcoesDoMenuDeTarefas
   }
 
   static pedirTitulo(): string {
     return this.prompt("Título da tarefa: ")
   }
 
-  static pedirPorId() {
-    return this.prompt("ID da tarefa a ser selecionado: ")
+  static pedirNovoTitulo(): string {
+    return this.prompt("Novo título da tarefa: ")
+  }
+
+  static pedirIdDaTarefa() {
+    return this.prompt("ID da tarefa a ser selecionada: ")
   }
 
   static cadastrarTarefa(): { titulo: string, prazo: Date | null } {
@@ -87,34 +85,10 @@ export default class TelaDeTarefas extends Tela {
 
   static imprimirTarefa(tarefa: TarefaProps): void {
     console.log("Tarefa: ", tarefa.titulo)
-    console.log("Tarefa Concluída? ", tarefa.estaCompletoFormatado)
+    console.log("Tarefa Concluída: ", tarefa.estaCompletoFormatado)
     console.log("Prazo formatado: ", tarefa.prazoFormatado)
     console.log("Data de criação: ", tarefa.dataDeCriacaoFormatada)
     console.log("Id: ", tarefa.id)
     console.log()
-  }
-
-  static imprimirNaoEncontrouTarefa() {
-    console.log("Tarefa não encontrada!")
-  }
-
-  static imprimirSemTarefasCadastradas() {
-    console.log("Não há tarefas cadastradas!")
-  }
-
-  static imprimirMensagemDeNenhumaTarefaCadastrada() {
-    console.log("Nenhuma tarefa cadastrada no sistema! Procedimento cancelado...")
-  }
-
-  static imprimirMensagemDeTituloInvalido() {
-    console.log("Título Inválido! Procedimento cancelado...")
-  }
-
-  static imprimirMensagemDeTituloVazio() {
-    console.log("Título vazio! Procedimento cancelado...")
-  }
-
-  static imprimirMensagemDeTarefaNaoEncontrada() {
-    console.log("Tarefa não encontrada! Procedimento cancelado...")
   }
 }

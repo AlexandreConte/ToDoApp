@@ -2,11 +2,11 @@
 import Tela from "./Tela"
 
 // Interfaces
-import ListaProps from "../interface/ListaProps"
-import TarefaProps from "../interface/Tarefa"
+import ListaProps from "../interfaces/ListaProps"
+import TarefaProps from "../interfaces/TarefaProps"
 
 // Enums 
-import OpcoesDoMenuDeListas from "../enums/OpcoesDoMenuDeListas"
+import OpcoesDoMenuDeListas from "../opcoesDeMenus/OpcoesDoMenuDeListas"
 
 export default class TelaDeListas extends Tela {
   constructor() {
@@ -21,43 +21,36 @@ export default class TelaDeListas extends Tela {
     console.log("3 - Editar o título de uma lista")
     console.log("4 - Excluir uma lista")
     console.log("5 - Mover tarefa existente para uma lista")
+    console.log("6 - Remover uma tarefa da lista")
     console.log("0 - Voltar")
+    const opcoesValidas = Object.values(OpcoesDoMenuDeListas)
 
     let opcao = this.prompt("Sua opção: ")
-    console.log()
-    while (
-      opcao !== OpcoesDoMenuDeListas.CadastrarNovaLista &&
-      opcao !== OpcoesDoMenuDeListas.MostrarListas &&
-      opcao !== OpcoesDoMenuDeListas.EditarTituloDeLista &&
-      opcao !== OpcoesDoMenuDeListas.ExcluirLista &&
-      opcao !== OpcoesDoMenuDeListas.MoverUmaTarefaParaLista &&
-      opcao !== OpcoesDoMenuDeListas.Voltar
-    ) {
+    while (!opcoesValidas.includes(opcao as OpcoesDoMenuDeListas)) {
       console.log("Opção inválida!")
-      opcao = this.prompt("Sua opção: ")
+      opcao = this.prompt("Sua opção: ") as OpcoesDoMenuDeListas
     }
-    return opcao
+    return opcao as OpcoesDoMenuDeListas
   }
 
-  static cadastrarLista(): { titulo: string } {
+  static cadastrarLista(): string {
     console.log("-- Cadastrar uma nova lista de tarefas --")
     const titulo = this.prompt("Título da lista: ")
-    return { titulo }
+    return titulo
   }
 
   static imprimirLista(lista: ListaProps) {
     const { titulo, id } = lista
-    console.log(`Lista: ${titulo} - ID: ${id}`)
+    console.log("Lista: ", titulo)
+    console.log("Id: ", id)
   }
 
-  static excluirLista(): { id: string } {
-    console.log("-- Excluir uma lista existente --")
-    const id = this.pedirPorId()
-    return { id }
+  static pedirIdDaLista(): string {
+    return this.prompt("Id da lista para seleção: ")
   }
 
-  static pedirPorId(): string {
-    return this.prompt("Id da lista: ")
+  static pedirNovoTitulo(): string {
+    return this.prompt("Novo título da lista: ")
   }
 
   static pedirTitulo(): string {
