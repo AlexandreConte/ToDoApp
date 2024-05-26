@@ -1,4 +1,4 @@
-import TarefaProps from "./Tarefa"
+import TarefaProps from "./TarefaProps"
 
 export default interface ListaProps {
   id: string

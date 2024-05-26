@@ -5,6 +5,7 @@ enum OpcoesDoMenuDeListas {
   ExcluirLista = "4",
   MoverUmaTarefaParaLista = "5",
   RemoverTarefaDaLista = "6",
+  CriarTarefaEmLista = "7",
   Voltar = "0"
 }
 
