@@ -2,8 +2,10 @@
 import Entidade from "./Entidade"
 import Tarefa from "./Tarefa"
 
-// Interafaces
-import ListaProps from "../interface/ListaProps"
+// Interfaces
+import ListaProps from "../interfaces/ListaProps"
+
+// Erros
 import ErroTituloInvalido from "../erros/ErroTituloInvalido"
 import ErroTituloVazio from "../erros/ErroTituloVazio"
 

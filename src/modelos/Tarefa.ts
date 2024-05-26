@@ -5,7 +5,9 @@ import Entidade from "./Entidade"
 // Erros:
 import ErroTituloVazio from "../erros/ErroTituloVazio"
 import ErroTituloInvalido from "../erros/ErroTituloInvalido"
-import TarefaProps from "../interface/Tarefa"
+
+// Interfaces
+import TarefaProps from "../interfaces/TarefaProps"
 
 export default class Tarefa extends Entidade implements TarefaProps {
   private _titulo: string
