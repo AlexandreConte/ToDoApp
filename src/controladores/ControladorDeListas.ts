@@ -234,6 +234,7 @@ export default class ControladorDeListas extends Controlador {
             break
           case OpcoesDoMenuDeListas.Voltar:
             this.fechar()
+            break
           default:
             break;
         }
