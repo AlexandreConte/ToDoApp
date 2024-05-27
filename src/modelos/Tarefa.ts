@@ -1,11 +1,9 @@
 // Modelos
 import Data from "./Data"
 import Entidade from "./Entidade"
-
 // Erros:
 import ErroTituloVazio from "../erros/ErroTituloVazio"
 import ErroTituloInvalido from "../erros/ErroTituloInvalido"
-
 // Interfaces
 import TarefaProps from "../interfaces/TarefaProps"
 
