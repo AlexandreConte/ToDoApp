@@ -5,12 +5,16 @@ export default class Data {
   private _date: Date | null = null
 
   constructor(date: Date | null = null) {
-    this._date = date
+    this._date = date ?? null
   }
 
-  set date(date: Date) {
-    this.validarData(date)
-    this._date = new Date(date)
+  set date(data: Date | null) {
+    if (data === null) {
+      this._date = null
+      return
+    }
+    this.validarData(data)
+    this._date = data
   }
 
   get formatado(): string {
@@ -53,10 +57,7 @@ export default class Data {
   }
 
   private validarData(date: Date) {
-    if (date === null) {
-      return
-    }
-    if (!(date instanceof Date) || isNaN(date?.getTime())) {
+    if (!(date instanceof Date)) {
       throw new ErroDataInvalida()
     }
   }
