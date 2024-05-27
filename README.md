@@ -8,4 +8,7 @@
 ```
 npm install
 ```
-3. Finalmente, para utilizar o projeto no seu computador
+3. Finalmente, para utilizar o projeto no seu computador, utilize o comando:
+```
+npm start
+```
