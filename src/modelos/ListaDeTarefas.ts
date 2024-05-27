@@ -31,6 +31,12 @@ export default class ListaDeTarefas extends Entidade implements ListaProps {
     this._titulo = titulo
   }
 
+  tarefaJahEstaNaLista(id: string): boolean {
+    const tarefa = this._tarefas.find(tarefa => tarefa.id === id)
+    const tarefaJaExiste = tarefa ? true : false
+    return tarefaJaExiste
+  }
+
   adicionarTarefa(tarefa: Tarefa): void {
     this._tarefas.push(tarefa)
   }

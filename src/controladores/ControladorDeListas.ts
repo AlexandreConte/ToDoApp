@@ -6,14 +6,14 @@ import TelaDeListas from "../telas/TelaDeListas"
 // Controladores
 import Controlador from "./Controlador"
 import ControladorDeTarefas from "./ControladorDeTarefas"
-// Interfaces
+// Enums
+import OpcoesDoMenuDeListas from "../opcoesDeMenus/OpcoesDoMenuDeListas"
+// Erros
 import ErroListaNaoEncontrada from "../erros/ErroListaNaoEncontrada"
 import ErroNenhumaListaCadastrada from "../erros/ErroNenhumaListaCadastrada"
 import ErroTarefaNaoEncontrada from "../erros/ErroTarefaNaoEncontrada"
 import ErroListaSemTarefas from "../erros/ErroListaSemTarefas"
-// Enums
-import OpcoesDoMenuDeListas from "../opcoesDeMenus/OpcoesDoMenuDeListas"
-import ErroTarefaJahPertenceNaLista from "../erros/ErroTarefaJahPertenceALista"
+import ErroTarefaJahPertenceALista from "../erros/ErroTarefaJahPertenceALista"
 
 export default class ControladorDeListas extends Controlador {
   constructor(
@@ -108,9 +108,9 @@ export default class ControladorDeListas extends Controlador {
     }
   }
 
-  validarSeListaJaPossuiTarefa(lista: Lista, tarefa: Tarefa): void {
-    if (lista.tarefas.includes(tarefa)) {
-      throw new ErroTarefaJahPertenceNaLista()
+  validarSeListaJahPossuiTarefa(lista: Lista, idTarefa: string): void {
+    if (lista.tarefaJahEstaNaLista(idTarefa)) {
+      throw new ErroTarefaJahPertenceALista()
     }
   }
 
@@ -173,7 +173,7 @@ export default class ControladorDeListas extends Controlador {
     this.validarSeListaExiste(lista)
     this.controladorDeTarefas.imprimirTarefasSemEsperarInteracao()
     const tarefa = this.encontrarTarefaValidaComId()
-    this.validarSeListaJaPossuiTarefa(lista, tarefa)
+    this.validarSeListaJahPossuiTarefa(lista, tarefa.id)
     lista.adicionarTarefa(tarefa)
     this.telaDeListas.imprimirMensagem("\nLista atualizada:")
     this.imprimirLista(lista)
