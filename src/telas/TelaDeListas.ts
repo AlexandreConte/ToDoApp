@@ -1,36 +1,14 @@
 // Telas
 import Tela from "./Tela"
-
 // Interfaces
 import ListaProps from "../interfaces/ListaProps"
 import TarefaProps from "../interfaces/TarefaProps"
-
 // Enums 
 import OpcoesDoMenuDeListas from "../opcoesDeMenus/OpcoesDoMenuDeListas"
 
 export default class TelaDeListas extends Tela {
   constructor() {
     super()
-  }
-
-  static mostrarMenu(): OpcoesDoMenuDeListas {
-    console.log()
-    console.log("-- Tela de listas --")
-    console.log("1 - Cadastrar nova lista")
-    console.log("2 - Mostrar listas")
-    console.log("3 - Editar o título de uma lista")
-    console.log("4 - Excluir uma lista")
-    console.log("5 - Mover tarefa existente para uma lista")
-    console.log("6 - Remover uma tarefa da lista")
-    console.log("0 - Voltar")
-    const opcoesValidas = Object.values(OpcoesDoMenuDeListas)
-
-    let opcao = this.prompt("Sua opção: ")
-    while (!opcoesValidas.includes(opcao as OpcoesDoMenuDeListas)) {
-      console.log("Opção inválida!")
-      opcao = this.prompt("Sua opção: ") as OpcoesDoMenuDeListas
-    }
-    return opcao as OpcoesDoMenuDeListas
   }
 
   static cadastrarLista(): string {
@@ -78,5 +56,26 @@ export default class TelaDeListas extends Tela {
     console.log("Concluído: ", tarefa.estaCompletoFormatado)
     console.log("Data de criação: ", tarefa.dataDeCriacaoFormatada)
     console.log("Id: ", tarefa.id)
+  }
+
+  static mostrarMenu(): OpcoesDoMenuDeListas {
+    console.log()
+    console.log("-- Tela de listas --")
+    console.log("1 - Cadastrar nova lista")
+    console.log("2 - Mostrar listas")
+    console.log("3 - Editar o título de uma lista")
+    console.log("4 - Excluir uma lista")
+    console.log("5 - Mover tarefa existente para uma lista")
+    console.log("6 - Remover uma tarefa da lista")
+    console.log("7 - Adicionar uma nova tarefa em uma lista existente")
+    console.log("0 - Voltar")
+    const opcoesValidas = Object.values(OpcoesDoMenuDeListas)
+
+    let opcao = this.prompt("Sua opção: ")?.[0]
+    while (!opcoesValidas.includes(opcao as OpcoesDoMenuDeListas)) {
+      console.log("Opção inválida!")
+      opcao = this.prompt("Sua opção: ") as OpcoesDoMenuDeListas
+    }
+    return opcao as OpcoesDoMenuDeListas
   }
 }
