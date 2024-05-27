@@ -1,22 +1,19 @@
 // Modelos
 import Lista from "../modelos/ListaDeTarefas"
-
+import Tarefa from "../modelos/Tarefa"
 // Telas
 import TelaDeListas from "../telas/TelaDeListas"
-
 // Controladores
 import Controlador from "./Controlador"
 import ControladorDeTarefas from "./ControladorDeTarefas"
-
 // Interfaces
 import ErroListaNaoEncontrada from "../erros/ErroListaNaoEncontrada"
 import ErroNenhumaListaCadastrada from "../erros/ErroNenhumaListaCadastrada"
 import ErroTarefaNaoEncontrada from "../erros/ErroTarefaNaoEncontrada"
 import ErroListaSemTarefas from "../erros/ErroListaSemTarefas"
-import OpcoesDoMenuDeListas from "../opcoesDeMenus/OpcoesDoMenuDeListas"
-
 // Enums
-
+import OpcoesDoMenuDeListas from "../opcoesDeMenus/OpcoesDoMenuDeListas"
+import ErroTarefaJahPertenceNaLista from "../erros/ErroTarefaJahPertenceALista"
 
 export default class ControladorDeListas extends Controlador {
   constructor(
@@ -47,70 +44,21 @@ export default class ControladorDeListas extends Controlador {
     return this.listas.length === 0
   }
 
-  validarSeExistemListasCadastradas(): void {
-    if (this.naoExistemListasCadastradas) {
-      throw new ErroNenhumaListaCadastrada()
-    }
-  }
-
   validarSeListaPossuiTarefas(lista: Lista): void {
     if (lista.tarefas.length === 0) {
       throw new ErroListaSemTarefas()
     }
   }
-  
+
   validarSeListaExiste(lista: Lista | null): void {
     if (lista === null) {
       throw new ErroListaNaoEncontrada()
     }
   }
 
-  abrirTela(): void {
-    this.abrir()
-    while (this.manterAberto) {
-      try {
-        console.log()
-        const opcao = this.telaDeListas.mostrarMenu()
-        switch (opcao) {
-          case OpcoesDoMenuDeListas.CadastrarNovaLista:
-            this.cadastrarLista()
-            break
-          case OpcoesDoMenuDeListas.MostrarListas:
-            this.imprimirListas()
-            break
-          case OpcoesDoMenuDeListas.EditarTituloDeLista:
-            this.editarTituloDeLista()
-            break
-          case OpcoesDoMenuDeListas.ExcluirLista:
-            this.excluirLista()
-            break
-          case OpcoesDoMenuDeListas.MoverUmaTarefaParaLista:
-            this.moverTarefaParaLista()
-            break
-          case OpcoesDoMenuDeListas.RemoverTarefaDaLista:
-            this.removerTarefaDeUmaLista()
-          case OpcoesDoMenuDeListas.CriarTarefaEmLista:
-            break
-          case OpcoesDoMenuDeListas.Voltar:
-            this.fechar()
-          default:
-            break;
-        }
-      } catch (erro: any) {
-        this.telaDeListas.imprimirMensagem("Erro:")
-        this.telaDeListas.imprimirMensagem(erro.message)
-        this.telaDeListas.esperarInteracao()
-      }
-    }
-  }
-
-  imprimirListas(): void {
+  validarSeExistemListasETarefas(): void {
     this.validarSeExistemListasCadastradas()
-    this.telaDeListas.imprimirMensagem("Listas cadastradas no sistema: ")
-    this.listas.forEach((lista) => {
-      this.imprimirLista(lista)
-    })
-    this.telaDeListas.esperarInteracao()
+    this.controladorDeTarefas.validarSeExistemTarefas()
   }
 
   imprimirLista(lista: Lista): void {
@@ -124,70 +72,16 @@ export default class ControladorDeListas extends Controlador {
     this.controladorDeTarefas.telaDeTarefas.imprimirTarefas(tarefas)
   }
 
-  cadastrarLista(): void {
-    const titulo = this.telaDeListas.cadastrarLista()
-    const lista = new Lista(titulo)
-    this.listas.push(lista)
-    this.telaDeListas.imprimirMensagem("\nLista cadastrada: ")
-    this.imprimirLista(lista)
-    this.telaDeListas.esperarInteracao()
+  imprimirListasSemEsperarInteracao(): void {
+    this.validarSeExistemListasCadastradas()
+    this.telaDeListas.imprimirMensagem("Listas cadastradas no sistema: ")
+    this.listas.forEach((lista) => {
+      this.imprimirLista(lista)
+    })
   }
 
-  excluirLista(): void {
-    this.validarSeExistemListasCadastradas()
-    const lista = this.pegarListaComId()
-    this.validarSeListaExiste(lista)
-    const indiceLista = this.encontrarIndiceDaListaComId(lista!.id)
-    const listaExcluida = this.listas.splice(indiceLista, 1)[0]
-    this.telaDeListas.imprimirMensagem("\nLista excluída: ")
-    this.imprimirLista(listaExcluida)
-    this.telaDeListas.esperarInteracao()
-  }
-
-  removerTarefaDeUmaLista(): void {
-    this.validarSeExistemListasCadastradas()
-    this.imprimirListas()
-    const lista = this.pegarListaComId()
-    this.validarSeListaExiste(lista)
-    this.validarSeListaPossuiTarefas(lista!)
-    this.telaDeListas.imprimirMensagem("Tarefas da lista:")
-    lista!.tarefas.forEach(
-      tarefa => this.controladorDeTarefas.imprimirTarefa(tarefa)
-    )
-    const tarefa = this.controladorDeTarefas.encontrarTarefaComId()
-    this.controladorDeTarefas.validarSeTarefaExiste(tarefa)
-    const indice = this.controladorDeTarefas.encontrarIndiceDaTarefaComId(tarefa!.id)
-    const tarefaRemovida = lista!.tarefas.splice(indice, 1)[0]
-    this.telaDeListas.imprimirMensagem("\nTarefa removida:")
-    this.controladorDeTarefas.imprimirTarefa(tarefaRemovida)
-    this.telaDeListas.imprimirLista(lista!)
-  }
-
-  editarTituloDeLista(): void {
-    this.validarSeExistemListasCadastradas()
-    this.imprimirListas()
-    const lista = this.pegarListaComId()
-    this.validarSeListaExiste(lista)
-    const novoTitulo = this.telaDeListas.pedirNovoTitulo()
-    lista!.titulo = novoTitulo
-    this.imprimirLista(lista!)
-    this.telaDeListas.esperarInteracao()
-  }
-
-  moverTarefaParaLista() {
-    this.validarSeExistemListasCadastradas()
-    this.controladorDeTarefas.validarSeExistemTarefas()
-    this.telaDeListas.imprimirListas(this.listas)
-    const lista = this.pegarListaComId()
-    this.validarSeListaExiste(lista)
-    this.controladorDeTarefas.telaDeTarefas.imprimirTarefas(
-      this.controladorDeTarefas.tarefas
-    )
-    const tarefa = this.controladorDeTarefas.encontrarTarefaComId()
-    this.controladorDeTarefas.validarSeTarefaExiste(tarefa)
-    lista!.adicionarTarefa(tarefa!)
-    this.telaDeListas.imprimirMensagem("\nLista atualizada:")
-    this.imprimirLista(lista!)
+  imprimirListasEsperandoInteracao(): void {
+    this.imprimirListasSemEsperarInteracao()
     this.telaDeListas.esperarInteracao()
   }
 
@@ -199,10 +93,44 @@ export default class ControladorDeListas extends Controlador {
     })
   }
 
-  pegarListaComId(): Lista | null {
+  cadastrarLista(): void {
+    const titulo = this.telaDeListas.cadastrarLista()
+    const lista = new Lista(titulo)
+    this.listas.push(lista)
+    this.telaDeListas.imprimirMensagem("\nLista cadastrada: ")
+    this.imprimirLista(lista)
+    this.telaDeListas.esperarInteracao()
+  }
+
+  validarSeExistemListasCadastradas(): void {
+    if (this.naoExistemListasCadastradas) {
+      throw new ErroNenhumaListaCadastrada()
+    }
+  }
+
+  validarSeListaJaPossuiTarefa(lista: Lista, tarefa: Tarefa): void {
+    if (lista.tarefas.includes(tarefa)) {
+      throw new ErroTarefaJahPertenceNaLista()
+    }
+  }
+
+  pegarListaComIdEValidar(): Lista {
     const id = this.telaDeListas.pedirIdDaLista()
-    const lista = this.listas.find(l => l.id === id)
-    return lista ?? null
+    const lista = this.listas.find(l => l.id === id) ?? null
+    if (lista === null) {
+      throw new ErroListaNaoEncontrada()
+    }
+    return lista!
+  }
+
+  editarTituloDeLista(): void {
+    this.validarSeExistemListasCadastradas()
+    this.imprimirListasSemEsperarInteracao()
+    const lista = this.pegarListaComIdEValidar()
+    const novoTitulo = this.telaDeListas.pedirNovoTitulo()
+    lista.titulo = novoTitulo
+    this.imprimirLista(lista)
+    this.telaDeListas.esperarInteracao()
   }
 
   encontrarIndiceDaListaComId(id: string): number {
@@ -210,9 +138,109 @@ export default class ControladorDeListas extends Controlador {
     return index
   }
 
-  encontrarIndiceDaListaPedindoId(): number {
-    const id = this.telaDeListas.pedirIdDaLista()
-    const indice = this.listas.findIndex(lista => lista.id === id)
+  encontrarIndiceDaTarefaNaLista(lista: Lista): number {
+    this.telaDeListas.imprimirMensagem("Tarefas da lista:")
+    lista!.tarefas.forEach(
+      tarefa => this.controladorDeTarefas.imprimirTarefa(tarefa)
+    )
+    const tarefa = this.controladorDeTarefas.encontrarTarefaComId()
+    this.controladorDeTarefas.validarSeTarefaExiste(tarefa)
+    const indice = this.controladorDeTarefas.encontrarIndiceDaTarefaCom(tarefa!.id)
     return indice
+  }
+
+  encontrarTarefaValidaComId(): Tarefa {
+    const tarefa = this.controladorDeTarefas.encontrarTarefaComId()
+    this.controladorDeTarefas.validarSeTarefaExiste(tarefa)
+    return tarefa!
+  }
+
+  excluirLista(): void {
+    this.validarSeExistemListasCadastradas()
+    this.imprimirListasSemEsperarInteracao()
+    const lista = this.pegarListaComIdEValidar()
+    const indiceLista = this.encontrarIndiceDaListaComId(lista.id)
+    const listaExcluida = this.listas.splice(indiceLista, 1)[0]
+    this.telaDeListas.imprimirMensagem("\nLista excluída: ")
+    this.imprimirLista(listaExcluida)
+    this.telaDeListas.esperarInteracao()
+  }
+
+  adicionarTarefaExistenteNaLista() {
+    this.validarSeExistemListasETarefas()
+    this.imprimirListasSemEsperarInteracao()
+    const lista = this.pegarListaComIdEValidar()
+    this.validarSeListaExiste(lista)
+    this.controladorDeTarefas.imprimirTarefasSemEsperarInteracao()
+    const tarefa = this.encontrarTarefaValidaComId()
+    this.validarSeListaJaPossuiTarefa(lista, tarefa)
+    lista.adicionarTarefa(tarefa)
+    this.telaDeListas.imprimirMensagem("\nLista atualizada:")
+    this.imprimirLista(lista)
+    this.telaDeListas.esperarInteracao()
+  }
+
+  removerTarefaDeUmaLista(): void {
+    this.validarSeExistemListasCadastradas()
+    this.imprimirListasSemEsperarInteracao()
+    const lista = this.pegarListaComIdEValidar()
+    this.validarSeListaPossuiTarefas(lista)
+    const indice = this.encontrarIndiceDaTarefaNaLista(lista)
+    const tarefaRemovida = lista.tarefas.splice(indice, 1)[0]
+    this.telaDeListas.imprimirMensagem("\nTarefa removida:")
+    this.controladorDeTarefas.imprimirTarefa(tarefaRemovida)
+    this.telaDeListas.imprimirLista(lista)
+  }
+
+  criarTarefaEmLista(): void {
+    this.validarSeExistemListasCadastradas()
+    this.imprimirListasSemEsperarInteracao()
+    const lista = this.pegarListaComIdEValidar()
+    const tarefa = this.controladorDeTarefas.cadastrarTarefa()
+    this.controladorDeTarefas.validarSeTarefaExiste(tarefa)
+    lista.tarefas.push(tarefa)
+    this.telaDeListas.imprimirMensagem("Lista atualizada!")
+    this.imprimirLista(lista)
+    this.telaDeListas.esperarInteracao()
+  }
+
+  abrirTela(): void {
+    this.abrir()
+    while (this.manterAberto) {
+      try {
+        console.log()
+        const opcao = this.telaDeListas.mostrarMenu()
+        switch (opcao) {
+          case OpcoesDoMenuDeListas.CadastrarNovaLista:
+            this.cadastrarLista()
+            break
+          case OpcoesDoMenuDeListas.MostrarListas:
+            this.imprimirListasEsperandoInteracao()
+            break
+          case OpcoesDoMenuDeListas.EditarTituloDeLista:
+            this.editarTituloDeLista()
+            break
+          case OpcoesDoMenuDeListas.ExcluirLista:
+            this.excluirLista()
+            break
+          case OpcoesDoMenuDeListas.MoverUmaTarefaParaLista:
+            this.adicionarTarefaExistenteNaLista()
+            break
+          case OpcoesDoMenuDeListas.RemoverTarefaDaLista:
+            this.removerTarefaDeUmaLista()
+            break
+          case OpcoesDoMenuDeListas.CriarTarefaEmLista:
+            this.criarTarefaEmLista()
+            break
+          case OpcoesDoMenuDeListas.Voltar:
+            this.fechar()
+          default:
+            break;
+        }
+      } catch (erro: any) {
+        this.telaDeListas.imprimirMensagem("Erro! " + erro.message)
+        this.telaDeListas.esperarInteracao()
+      }
+    }
   }
 }

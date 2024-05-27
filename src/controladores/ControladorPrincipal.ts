@@ -1,11 +1,9 @@
+// Telas
+import TelaPrincipal from "../telas/TelaPrincipal"
 // Controladores
 import Controlador from "./Controlador"
 import ControladorDeListas from "./ControladorDeListas"
 import ControladorDeTarefas from "./ControladorDeTarefas"
-
-// Telas
-import TelaPrincipal from "../telas/TelaPrincipal"
-
 // Enums
 import OpcoesDoMenuPrincipal from "../opcoesDeMenus/OpcoesDoMenuPrincipal"
 

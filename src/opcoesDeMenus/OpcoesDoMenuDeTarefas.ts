@@ -5,6 +5,7 @@ enum OpcoesDoMenuDeTarefas {
   Excluir = "4",
   Concluir = "5",
   MarcarComoParaFazer = "6",
+  EditarPrazoDaTarefa = "7",
   Voltar = "0"
 } 
 
