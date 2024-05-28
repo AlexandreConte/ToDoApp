@@ -37,7 +37,7 @@ export default class ListaDeTarefas extends Entidade {
     return this.tarefas.length > 0
   }
 
-  tarefaJahEstaNaLista(id: string): boolean {
+  tarefaJaEstaNaLista(id: string): boolean {
     const tarefa = this._tarefas.find(tarefa => tarefa.id === id)
     const tarefaJaExiste = tarefa ? true : false
     return tarefaJaExiste
