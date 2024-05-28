@@ -112,7 +112,6 @@ export default class ControladorListaTarefas extends Controlador {
   }
 
   editarTituloDeLista(): void {
-    this.lancarErroSeNaoExistiremListas()
     this.imprimirListas()
     const id = this.telaListaTarefas.pedirIdDaLista()
     const lista = this.encontrarLista(id)
@@ -139,7 +138,6 @@ export default class ControladorListaTarefas extends Controlador {
   }
 
   excluirLista(): void {
-    this.lancarErroSeNaoExistiremListas()
     this.imprimirListas()
     const id = this.telaListaTarefas.pedirIdDaLista()
     const lista = this.encontrarLista(id)
@@ -152,7 +150,6 @@ export default class ControladorListaTarefas extends Controlador {
 
   adicionarTarefaExistenteNaLista() {
     this.controladorDeTarefas.lancarErroSeNaoExistiremTarefas()
-    this.lancarErroSeNaoExistiremListas()
     this.imprimirListas()
     const id = this.telaListaTarefas.pedirIdDaLista()
     const lista = this.encontrarLista(id)
@@ -167,7 +164,6 @@ export default class ControladorListaTarefas extends Controlador {
   }
 
   removerTarefaDeUmaLista(): void {
-    this.lancarErroSeNaoExistiremListas()
     this.imprimirListas()
     const idLista = this.telaListaTarefas.pedirIdDaLista()
     const lista = this.encontrarLista(idLista)
@@ -182,7 +178,6 @@ export default class ControladorListaTarefas extends Controlador {
   }
 
   criarTarefaEmLista(): void {
-    this.lancarErroSeNaoExistiremListas()
     this.imprimirListas()
     const idLista = this.telaListaTarefas.pedirIdDaLista()
     const lista = this.encontrarLista(idLista)
@@ -237,7 +232,7 @@ export default class ControladorListaTarefas extends Controlador {
             break;
         }
       } catch (erro: any) {
-        this.telaListaTarefas.imprimirMensagem("Erro! " + erro.message)
+        this.telaListaTarefas.imprimirMensagem("Erro! " + erro?.message ?? "")
         this.telaListaTarefas.esperarInteracao()
       }
     }
