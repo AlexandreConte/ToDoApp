@@ -1,7 +1,7 @@
 // Modelo:
 import Tarefa from "../modelos/Tarefa"
 // Tela:
-import TelaDeTarefas from "../telas/TelaTarefa"
+import TelaTarefas from "../telas/TelaTarefa"
 // Controlador:
 import Controlador from "./Controlador"
 // Enum menu:
@@ -12,14 +12,14 @@ import ErroTarefaNaoEncontrada from "../erros/ErroTarefaNaoEncontrada"
 
 export default class ControladorTarefa extends Controlador {
   constructor(
-    private readonly _telaDeTarefas = TelaDeTarefas,
+    private readonly _telaTarefas = TelaTarefas,
     private _tarefas: Tarefa[] = []
   ) {
     super()
   }
 
-  get telaDeTarefas() {
-    return this._telaDeTarefas
+  get telaTarefas() {
+    return this._telaTarefas
   }
 
   get tarefas(): Tarefa[] {
@@ -40,102 +40,112 @@ export default class ControladorTarefa extends Controlador {
     }
   }
 
-  lancarErroSeTarefaNaoExistir(tarefa: Tarefa | null) {
+  lancarErroSeTarefaNaoExiste(tarefa: Tarefa | null) {
     if (tarefa === null) {
       throw new ErroTarefaNaoEncontrada()
     }
   }
 
-  encontrarTarefaComId(): Tarefa | null {
-    const id = this.telaDeTarefas.pedirIdDaTarefa()
-    return this._tarefas.find(t => t.id === id) ?? null
+  encontrarTarefaPeloId(id: string): Tarefa | null {
+    const tarefa = this._tarefas.find(t => t.id === id) ?? null
+    return tarefa
   }
 
-  encontrarIndiceDaTarefaCom(id: string): number {
+  pedirIdTarefa(): string {
+    const id = this.telaTarefas.pedirIdDaTarefa()
+    return id
+  }
+
+  encontrarIndiceDaTarefa(id: string): number {
     const indice = this.tarefas.findIndex(tarefa => tarefa.id === id)
     return indice
   }
 
   imprimirTarefas(): void {
     this.lancarErroSeNaoExistiremTarefas()
-    this.telaDeTarefas.imprimirMensagem("Tarefas:\n")
+    this.telaTarefas.imprimirMensagem("\nTarefas:\n")
     this.tarefas.forEach(
       tarefa => this.imprimirTarefa(tarefa)
     )
   }
 
   esperarInteracao(): void {
-    this.telaDeTarefas.esperarInteracao()
+    this.telaTarefas.esperarInteracao()
   }
 
   imprimirTarefa(tarefa: Tarefa) {
-    this.lancarErroSeNaoExistiremTarefas()
-    this.lancarErroSeTarefaNaoExistir(tarefa)
-    this.telaDeTarefas.imprimirMensagem(`${tarefa.titulo}`)
-    this.telaDeTarefas.imprimirMensagem(`Id: ${tarefa.id}`)
-    this.telaDeTarefas.imprimirMensagem(`Prazo: ${tarefa.prazoFormatado}`)
-    this.telaDeTarefas.imprimirMensagem(`Concluída: ${tarefa.estaCompletoFormatado}`)
-    this.telaDeTarefas.imprimirMensagem(`Criada em: ${tarefa.dataDeCriacaoFormatada}\n`)
+    this.lancarErroSeTarefaNaoExiste(tarefa)
+    this.telaTarefas.imprimirMensagem(`\n${tarefa.titulo}`)
+    this.telaTarefas.imprimirMensagem(`Id: ${tarefa.id}`)
+    this.telaTarefas.imprimirMensagem(`Prazo: ${tarefa.prazoFormatado}`)
+    this.telaTarefas.imprimirMensagem(`Concluída: ${tarefa.estaCompletoFormatado}`)
+    this.telaTarefas.imprimirMensagem(`Criada em: ${tarefa.dataDeCriacaoFormatada}\n`)
+  }
+
+  criarTarefa(): Tarefa {
+    const { titulo, prazo } = this.telaTarefas.cadastrarTarefa()
+    const tarefa = new Tarefa(titulo, prazo ? new Date(prazo) : null)
+    return tarefa
   }
 
   cadastrarTarefa(): void {
-    const { titulo, prazo } = this.telaDeTarefas.cadastrarTarefa()
-    const tarefa = new Tarefa(titulo, prazo ? new Date(prazo) : null)
+    const tarefa = this.criarTarefa()
     this.tarefas.push(tarefa)
+    this.telaTarefas.imprimirMensagem("\nTarefa cadastrada!\n")
     this.imprimirTarefa(tarefa)
   }
 
   excluirTarefa(): void {
-    this.lancarErroSeNaoExistiremTarefas()
     this.imprimirTarefas()
-    const tarefa = this.encontrarTarefaComId()
-    this.lancarErroSeTarefaNaoExistir(tarefa)
-    const indice = this.encontrarIndiceDaTarefaCom(tarefa!.id)
-    const tarefaExcluida = this.tarefas.splice(indice, 1)[0]
-    this.telaDeTarefas.imprimirMensagem("Tarefa exluída!\n")
-    this.imprimirTarefa(tarefaExcluida)
+    const id = this.pedirIdTarefa()
+    const tarefa = this.encontrarTarefaPeloId(id)
+    this.lancarErroSeTarefaNaoExiste(tarefa)
+    const indice = this.encontrarIndiceDaTarefa(tarefa!.id)
+    this.tarefas.splice(indice, 1)
+    this.telaTarefas.imprimirMensagem("\nTarefa exluída!\n")
+    this.imprimirTarefa(tarefa!)
   }
 
   editarTitulo(): void {
-    this.lancarErroSeNaoExistiremTarefas()
     this.imprimirTarefas()
-    const tarefa = this.encontrarTarefaComId()
-    this.lancarErroSeTarefaNaoExistir(tarefa)
-    const titulo = this.telaDeTarefas.pedirTitulo()
+    const id = this.pedirIdTarefa()
+    const tarefa = this.encontrarTarefaPeloId(id)
+    this.lancarErroSeTarefaNaoExiste(tarefa)
+    const titulo = this.telaTarefas.pedirTitulo()
     tarefa!.titulo = titulo
-    this.telaDeTarefas.imprimirMensagem("\nTarefa atualizada! ")
+    this.telaTarefas.imprimirMensagem("\nTarefa atualizada!\n")
     this.imprimirTarefa(tarefa!)
   }
 
   editarPrazo(): void {
-    this.lancarErroSeNaoExistiremTarefas()
     this.imprimirTarefas()
-    const tarefa = this.encontrarTarefaComId()
-    this.lancarErroSeTarefaNaoExistir(tarefa)
-    const prazo = this.telaDeTarefas.pedirPrazoDaTarefa()
+    const id = this.pedirIdTarefa()
+    const tarefa = this.encontrarTarefaPeloId(id)
+    this.lancarErroSeTarefaNaoExiste(tarefa)
+    const prazo = this.telaTarefas.pedirPrazoDaTarefa()
     tarefa!.prazo = prazo!
-    this.telaDeTarefas.imprimirMensagem("Prazo atualizado!")
+    this.telaTarefas.imprimirMensagem("\nPrazo atualizado!\n")
     this.imprimirTarefa(tarefa!)
   }
 
   concluirUmaTarefa(): void {
-    this.lancarErroSeNaoExistiremTarefas()
     this.imprimirTarefas()
-    const tarefa = this.encontrarTarefaComId()
-    this.lancarErroSeTarefaNaoExistir(tarefa)
+    const id = this.pedirIdTarefa()
+    const tarefa = this.encontrarTarefaPeloId(id)
+    this.lancarErroSeTarefaNaoExiste(tarefa)
     tarefa!.completar()
+    this.telaTarefas.imprimirMensagem("\nTarefa concluída!\n")
     this.imprimirTarefa(tarefa!)
-    this.telaDeTarefas.imprimirMensagem("\nTarefa concluída!\n")
   }
 
   marcarTarefaParaFazer(): void {
-    this.lancarErroSeNaoExistiremTarefas()
     this.imprimirTarefas()
-    const tarefa = this.encontrarTarefaComId()
-    this.lancarErroSeTarefaNaoExistir(tarefa)
+    const id = this.pedirIdTarefa()
+    const tarefa = this.encontrarTarefaPeloId(id)
+    this.lancarErroSeTarefaNaoExiste(tarefa)
     tarefa!.descompletar()
+    this.telaTarefas.imprimirMensagem("\nTarefa marcada como não concluída!\n")
     this.imprimirTarefa(tarefa!)
-    this.telaDeTarefas.imprimirMensagem("\nTarefa marcada como não concluída!")
   }
 
 
@@ -143,7 +153,7 @@ export default class ControladorTarefa extends Controlador {
     this.abrir()
     while (this.manterAberto) {
       try {
-        let opcao = this.telaDeTarefas.mostrarMenu()
+        let opcao = this.telaTarefas.mostrarMenu()
         switch (opcao) {
           case OpcoesDoMenuDeTarefas.Cadastrar:
             this.cadastrarTarefa()
@@ -180,8 +190,8 @@ export default class ControladorTarefa extends Controlador {
             break
         }
       } catch (erro: any) {
-        this.telaDeTarefas.imprimirMensagem("Erro! " + erro.message)
-        this.telaDeTarefas.esperarInteracao()
+        this.telaTarefas.imprimirMensagem("Erro! " + erro.message)
+        this.telaTarefas.esperarInteracao()
       }
     }
   }
