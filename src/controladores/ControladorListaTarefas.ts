@@ -2,7 +2,7 @@
 import Lista from "../modelos/ListaTarefas"
 import Tarefa from "../modelos/Tarefa"
 // Tela:
-import TelaDeListas from "../telas/TelaListaTarefas"
+import TelaListaTarefas from "../telas/TelaListaTarefas"
 // Controladores:
 import Controlador from "./Controlador"
 import ControladorTarefa from "./ControladorTarefa"
@@ -13,7 +13,6 @@ import ErroListaNaoEncontrada from "../erros/ErroListaNaoEncontrada"
 import ErroNenhumaListaCadastrada from "../erros/ErroNenhumaListaCadastrada"
 import ErroListaSemTarefas from "../erros/ErroListaSemTarefas"
 import ErroTarefaJaEstaNaLista from "../erros/ErroTarefaJaEstaNaLista"
-import TelaListaTarefas from "../telas/TelaListaTarefas"
 
 export default class ControladorListaTarefas extends Controlador {
   constructor(
@@ -24,7 +23,7 @@ export default class ControladorListaTarefas extends Controlador {
     super()
   }
 
-  get controladorDeTarefas() {
+  get controladorTarefas() {
     return this._controladorTarefa
   }
 
@@ -85,7 +84,7 @@ export default class ControladorListaTarefas extends Controlador {
   imprimirTarefasDaLista(lista: Lista): void {
     if (lista.possuiTarefas) {
       lista.tarefas.forEach(
-        tarefa => this.controladorDeTarefas.imprimirTarefa(tarefa)
+        tarefa => this.controladorTarefas.imprimirTarefa(tarefa)
       )
     }
   }
@@ -106,87 +105,89 @@ export default class ControladorListaTarefas extends Controlador {
     this.imprimirLista(lista)
   }
 
-  encontrarLista(id: string): Lista | null {
+  encontrarListaPorId(id: string): Lista | null {
     const lista = this.listas.find(lista => lista.id === id) ?? null
     return lista
   }
 
-  editarTituloDeLista(): void {
-    this.imprimirListas()
+  pedirIdLista(): string {
     const id = this.telaListaTarefas.pedirIdDaLista()
-    const lista = this.encontrarLista(id)
-    this.lancarErroSeListaNaoExistir(lista)
-    const novoTitulo = this.telaListaTarefas.pedirTitulo()
-    lista!.titulo = novoTitulo
-    this.imprimirLista(lista!)
+    return id
   }
 
+  selecionarListaPorId(id: string): Lista {
+    const lista = this.encontrarListaPorId(id)
+    this.lancarErroSeListaNaoExistir(lista)
+    return lista!
+  }
+  
+  editarTituloDeLista(): void {
+    this.imprimirListas()
+    const id = this.pedirIdLista()
+    const lista = this.selecionarListaPorId(id)
+    const novoTitulo = this.telaListaTarefas.pedirTitulo()
+    lista.titulo = novoTitulo
+    this.telaListaTarefas.imprimirMensagem("\nTítulo atualizado!\n")
+    this.imprimirLista(lista)
+  }
+  
   encontrarIndiceDaLista(lista: Lista): number {
     const indice = this.listas.findIndex(l => l.id === lista.id)
     return indice
   }
 
-  encontrarIndiceDaTarefaNaLista(lista: Lista): number {
-    this.telaListaTarefas.imprimirMensagem("Tarefas da lista:")
-    lista!.tarefas.forEach(
-      tarefa => this.controladorDeTarefas.imprimirTarefa(tarefa)
-    )
-    const tarefa = this.controladorDeTarefas.encontrarTarefaComId()
-    this.controladorDeTarefas.lancarErroSeTarefaNaoExistir(tarefa)
-    const indice = this.controladorDeTarefas.encontrarIndiceDaTarefaCom(tarefa!.id)
+  encontrarIndiceDaTarefaNaLista(lista: Lista, tarefa: Tarefa): number {
+    this.imprimirTarefasDaLista(lista)
+    const indice = this.controladorTarefas.encontrarIndiceDaTarefa(tarefa.id)
     return indice
   }
 
   excluirLista(): void {
     this.imprimirListas()
-    const id = this.telaListaTarefas.pedirIdDaLista()
-    const lista = this.encontrarLista(id)
-    this.lancarErroSeListaNaoExistir(lista)
-    const indiceDaLista = this.encontrarIndiceDaLista(lista!)
-    this.listas.splice(indiceDaLista, 1)[0]
+    const id = this.pedirIdLista()
+    const lista = this.selecionarListaPorId(id)
+    const indiceDaLista = this.encontrarIndiceDaLista(lista)
+    this.listas.splice(indiceDaLista, 1)
     this.telaListaTarefas.imprimirMensagem("\nLista excluída: ")
-    this.imprimirLista(lista!)
+    this.imprimirLista(lista)
   }
 
   adicionarTarefaExistenteNaLista() {
-    this.controladorDeTarefas.lancarErroSeNaoExistiremTarefas()
+    this.controladorTarefas.lancarErroSeNaoExistiremTarefas()
     this.imprimirListas()
-    const id = this.telaListaTarefas.pedirIdDaLista()
-    const lista = this.encontrarLista(id)
-    this.lancarErroSeListaNaoExistir(lista)
-    this.controladorDeTarefas.imprimirTarefas()
-    const tarefa = this.controladorDeTarefas.encontrarTarefaComId()
-    this.controladorDeTarefas.lancarErroSeTarefaNaoExistir(tarefa)
-    this.lancarErroSeTarefaJahEstaNaLista(lista!, tarefa!.id)
-    lista!.adicionarTarefa(tarefa!)
-    this.telaListaTarefas.imprimirMensagem("\nLista atualizada:")
-    this.imprimirLista(lista!)
+    const id = this.pedirIdLista()
+    const lista = this.selecionarListaPorId(id)
+    const idTarefa = this.controladorTarefas.pedirIdTarefa()
+    const tarefa = this.controladorTarefas.selecionarTarefaPeloId(idTarefa)
+    this.lancarErroSeTarefaJahEstaNaLista(lista, tarefa.id)
+    lista.adicionarTarefa(tarefa)
+    this.telaListaTarefas.imprimirMensagem("\nTarefa adicionada na lista!\n")
+    this.imprimirLista(lista)
   }
 
   removerTarefaDeUmaLista(): void {
     this.imprimirListas()
-    const idLista = this.telaListaTarefas.pedirIdDaLista()
-    const lista = this.encontrarLista(idLista)
-    this.lancarErroSeListaNaoExistir(lista)
-    this.lancarErroSeListaEstiverVazia(lista!)
-    const indice = this.encontrarIndiceDaTarefaNaLista(lista!)
-    const tarefaRemovida = lista!.tarefas.splice(indice, 1)[0]
-    this.controladorDeTarefas.imprimirTarefa(tarefaRemovida)
+    const id = this.pedirIdLista()
+    const lista = this.selecionarListaPorId(id)
+    this.lancarErroSeListaEstiverVazia(lista)
+    const idTarefa = this.controladorTarefas.pedirIdTarefa()
+    const tarefa = this.controladorTarefas.selecionarTarefaPeloId(idTarefa)
+    const indice = this.encontrarIndiceDaTarefaNaLista(lista, tarefa)
+    lista.tarefas.splice(indice, 1)
+    this.controladorTarefas.imprimirTarefa(tarefa)
     this.telaListaTarefas.imprimirMensagem("\nTarefa removida!\n")
-    this.telaListaTarefas.imprimirMensagem("Lista atualizada:\n")
-    this.imprimirLista(lista!)
+    this.imprimirLista(lista)
   }
 
   criarTarefaEmLista(): void {
     this.imprimirListas()
-    const idLista = this.telaListaTarefas.pedirIdDaLista()
-    const lista = this.encontrarLista(idLista)
-    this.lancarErroSeListaNaoExistir(lista)
-    const { titulo, prazo } = this.controladorDeTarefas.telaDeTarefas.cadastrarTarefa()
+    const id = this.pedirIdLista()
+    const lista = this.selecionarListaPorId(id)
+    const { titulo, prazo } = this.controladorTarefas.telaDeTarefas.cadastrarTarefa()
     const tarefa = new Tarefa(titulo, prazo)
-    this.controladorDeTarefas.tarefas.push(tarefa)
-    lista!.tarefas.push(tarefa)
-    this.telaListaTarefas.imprimirMensagem("Lista atualizada:")
+    this.controladorTarefas.tarefas.push(tarefa)
+    lista.tarefas.push(tarefa)
+    this.telaListaTarefas.imprimirMensagem("\nLista atualizada!\n")
     this.imprimirLista(lista!)
   }
 
