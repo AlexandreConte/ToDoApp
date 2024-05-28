@@ -1,5 +1,5 @@
 export default class ErroListaSemTarefas extends Error {
-  constructor() {
-    super("Lista não possui nenhuma tarefa! Retornando...")
+  constructor(mensagem?: string) {
+    super("Lista não possui nenhuma tarefa!\n" + mensagem)
   }
 }

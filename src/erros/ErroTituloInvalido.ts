@@ -1,5 +1,5 @@
 export default class ErroTituloInvalido extends Error {
-  constructor() {
-    super("Título inválido! Retornando...")
+  constructor(mensagem?: string) {
+    super("Título inválido!\n" + mensagem)
   }
 }

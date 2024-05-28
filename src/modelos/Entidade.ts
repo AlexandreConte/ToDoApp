@@ -1,3 +1,4 @@
+// Modelo:
 import Id from "./Id"
 
 export default class Entidade {

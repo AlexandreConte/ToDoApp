@@ -1,4 +1,4 @@
-// Erros
+// Erro:
 import ErroDataInvalida from "../erros/ErroDataInvalida"
 
 export default class Data {

@@ -1,5 +1,5 @@
 export default class ErroDataInvalida extends Error {
-  constructor() {
-    super("Data inválida! Retornando...")
+  constructor(mensagem?: string) {
+    super("Data inválida!\n" + mensagem)
   }
 }

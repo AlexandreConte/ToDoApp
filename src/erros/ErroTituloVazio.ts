@@ -1,5 +1,7 @@
-export default class ErroTituloVazio extends Error {
-  constructor() {
-    super("Título não pode ser vazio! Retornando...");
+import ErroTituloInvalido from "./ErroTituloInvalido";
+
+export default class ErroTituloVazio extends ErroTituloInvalido {
+  constructor(mensagem?: string) {
+    super("Título não pode ser vazio!\n" + mensagem);
   }
 }

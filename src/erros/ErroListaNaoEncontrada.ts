@@ -1,5 +1,5 @@
 export default class ErroListaNaoEncontrada extends Error {
-  constructor() {
-    super("Lista não encontrada! Retornando...")
+  constructor(mensagem?: string) {
+    super("Lista não encontrada!\n" + mensagem)
   }
 }

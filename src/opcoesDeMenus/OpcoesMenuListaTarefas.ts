@@ -1,4 +1,4 @@
-enum OpcoesDoMenuDeListas {
+enum OpcoesMenuListaTarefas {
   CadastrarNovaLista = "1",
   MostrarListas = "2",
   EditarTituloDeLista = "3",
@@ -9,4 +9,4 @@ enum OpcoesDoMenuDeListas {
   Voltar = "0"
 }
 
-export default OpcoesDoMenuDeListas
+export default OpcoesMenuListaTarefas

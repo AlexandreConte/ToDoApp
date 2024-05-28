@@ -1,21 +1,17 @@
-// Telas
+// Tela:
 import Tela from "./Tela"
-// Interfaces
-import TarefaProps from "../interfaces/TarefaProps"
-// Enums
-import OpcoesDoMenuDeTarefas from "../opcoesDeMenus/OpcoesDoMenuDeTarefas"
+// Enum menu:
+import OpcoesDoMenuTarefa from "../opcoesDeMenus/OpcoesMenuTarefa"
 
-export default class TelaDeTarefas extends Tela {
+
+export default class TelaTarefa extends Tela {
   constructor() {
     super()
   }
 
   static pedirTitulo(): string {
+    console.log("Nomeando a tarefa!")
     return this.prompt("Título da tarefa: ")
-  }
-
-  static pedirNovoTitulo(): string {
-    return this.prompt("Novo título da tarefa: ")
   }
 
   static pedirIdDaTarefa() {
@@ -28,19 +24,6 @@ export default class TelaDeTarefas extends Tela {
     const titulo: string = this.prompt("Título: ")
     const prazo: Date | null = this.pedirPrazoDaTarefa()
     return { titulo, prazo }
-  }
-
-  static imprimirTarefas(tarefas: TarefaProps[]) {
-    tarefas.map(tarefa => this.imprimirTarefa(tarefa))
-  }
-
-  static imprimirTarefa(tarefa: TarefaProps): void {
-    console.log("Tarefa: ", tarefa.titulo)
-    console.log("Tarefa Concluída: ", tarefa.estaCompletoFormatado)
-    console.log("Prazo formatado: ", tarefa.prazoFormatado)
-    console.log("Data de criação: ", tarefa.dataDeCriacaoFormatada)
-    console.log("Id: ", tarefa.id)
-    console.log()
   }
 
   static pedirPrazoDaTarefa(): Date | null {
@@ -74,7 +57,7 @@ export default class TelaDeTarefas extends Tela {
     return new Date(ano!, mes!, dia!)
   }
 
-  static mostrarMenu(): OpcoesDoMenuDeTarefas {
+  static mostrarMenu(): OpcoesDoMenuTarefa {
     console.log("")
     console.log("-- Tela de Tarefas --")
     console.log("1 - Cadastrar uma nova tarefa")
@@ -85,14 +68,14 @@ export default class TelaDeTarefas extends Tela {
     console.log("6 - Desmarcar a conclusão de uma tarefa")
     console.log("7 - Editar o prazo de uma tarefa")
     console.log("0 - Voltar")
-    const opcoesValidas = Object.values(OpcoesDoMenuDeTarefas)
+    const opcoesValidas = Object.values(OpcoesDoMenuTarefa)
 
     let opcao = this.prompt("Sua opção: ")?.[0]
     console.log()
-    while (!opcoesValidas.includes(opcao as OpcoesDoMenuDeTarefas)) {
+    while (!opcoesValidas.includes(opcao as OpcoesDoMenuTarefa)) {
       console.log("Opção inválida!")
-      opcao = this.prompt("Sua opção: ") as OpcoesDoMenuDeTarefas
+      opcao = this.prompt("Sua opção: ") as OpcoesDoMenuTarefa
     }
-    return opcao as OpcoesDoMenuDeTarefas
+    return opcao as OpcoesDoMenuTarefa
   }
 }

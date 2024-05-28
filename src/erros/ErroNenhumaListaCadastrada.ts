@@ -1,5 +1,5 @@
 export default class ErroNenhumaListaCadastrada extends Error {
-  constructor() {
-    super("Nenhuma lista cadastrada! Retornando...")
+  constructor(mensagem?: string) {
+    super("Nenhuma lista cadastrada!\n" + mensagem)
   }
 }

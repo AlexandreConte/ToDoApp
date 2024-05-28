@@ -1,13 +1,11 @@
-// Modelos
+// Modelos:
 import Entidade from "./Entidade"
 import Tarefa from "./Tarefa"
-// Interfaces
-import ListaProps from "../interfaces/ListaProps"
-// Erros
+// Erros:
 import ErroTituloInvalido from "../erros/ErroTituloInvalido"
 import ErroTituloVazio from "../erros/ErroTituloVazio"
 
-export default class ListaDeTarefas extends Entidade implements ListaProps {
+export default class ListaDeTarefas extends Entidade {
   private _titulo: string
   constructor(
     titulo: string,
@@ -31,6 +29,14 @@ export default class ListaDeTarefas extends Entidade implements ListaProps {
     this._titulo = titulo
   }
 
+  get estaVazia(): boolean {
+    return this.tarefas.length === 0
+  }
+
+  get possuiTarefas(): boolean {
+    return this.tarefas.length > 0
+  }
+
   tarefaJahEstaNaLista(id: string): boolean {
     const tarefa = this._tarefas.find(tarefa => tarefa.id === id)
     const tarefaJaExiste = tarefa ? true : false
@@ -45,10 +51,9 @@ export default class ListaDeTarefas extends Entidade implements ListaProps {
     this._tarefas.splice(indice, 1)
   }
 
-  indiceDaTarefa(id: string): number {
-    const tarefa = this.tarefas.find(t => t.id === id)
-    const index = this.tarefas.findIndex(t => t === tarefa)
-    return index
+  encontrarIndiceDaTarefa(idDaTarefa: string): number {
+    const indice = this.tarefas.findIndex(t => t.id === idDaTarefa)
+    return indice
   }
 
   private validarTitulo(titulo: string) {

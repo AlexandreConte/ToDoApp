@@ -1,17 +1,17 @@
-// Telas
+// Tela:
 import TelaPrincipal from "../telas/TelaPrincipal"
-// Controladores
-import Controlador from "./Controlador"
-import ControladorDeListas from "./ControladorDeListas"
-import ControladorDeTarefas from "./ControladorDeTarefas"
-// Enums
-import OpcoesDoMenuPrincipal from "../opcoesDeMenus/OpcoesDoMenuPrincipal"
+// Controladores:
+import Controlador from "./Controlador";
+import ControladorTarefa from "./ControladorTarefa";
+import ControladorListaTarefas from "./ControladorListaTarefas";
+// Enum menu:
+import OpcoesDoMenuPrincipal from "../opcoesDeMenus/OpcoesMenuPrincipal"
 
 export default class ControladorPrincipal extends Controlador {
   constructor(
     private readonly _telaPrincipal = TelaPrincipal,
-    private readonly _controladorDeTarefas = new ControladorDeTarefas(),
-    private readonly _controladorDeListas = new ControladorDeListas(_controladorDeTarefas)
+    private readonly _controladorTarefa = new ControladorTarefa(),
+    private readonly _controladorListaTarefas = new ControladorListaTarefas(_controladorTarefa)
   ) { 
     super()
   }
@@ -20,12 +20,12 @@ export default class ControladorPrincipal extends Controlador {
     return this._telaPrincipal;
   }
 
-  get controladorDeTarefas() {
-    return this._controladorDeTarefas
+  get controladorTarefa() {
+    return this._controladorTarefa
   }
 
-  get controladorDeListas() {
-    return this._controladorDeListas
+  get controladorListaTarefas() {
+    return this._controladorListaTarefas
   }
 
   abrirTela(): void {
@@ -34,10 +34,10 @@ export default class ControladorPrincipal extends Controlador {
       let opcao = this.telaPrincipal.mostrarMenu()
       switch (opcao) {
         case OpcoesDoMenuPrincipal.AbrirTelaDeTarefas:
-          this.controladorDeTarefas.abrirTela()
+          this.controladorTarefa.abrirTela()
           break
         case OpcoesDoMenuPrincipal.AbrirTelaDeListasDeTarefas:
-          this.controladorDeListas.abrirTela()
+          this.controladorListaTarefas.abrirTela()
           break
         case OpcoesDoMenuPrincipal.Fechar:
           this.fechar()

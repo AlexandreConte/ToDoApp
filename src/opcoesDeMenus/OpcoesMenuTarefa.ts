@@ -1,4 +1,4 @@
-enum OpcoesDoMenuDeTarefas {
+enum OpcoesDoMenuTarefa {
   Cadastrar = "1",
   Imprimir = "2",
   EditarTitulo = "3",
@@ -9,4 +9,4 @@ enum OpcoesDoMenuDeTarefas {
   Voltar = "0"
 } 
 
-export default OpcoesDoMenuDeTarefas
+export default OpcoesDoMenuTarefa

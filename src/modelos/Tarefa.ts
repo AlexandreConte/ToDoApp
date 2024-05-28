@@ -1,13 +1,11 @@
-// Modelos
+// Modelos:
 import Data from "./Data"
 import Entidade from "./Entidade"
 // Erros:
 import ErroTituloVazio from "../erros/ErroTituloVazio"
 import ErroTituloInvalido from "../erros/ErroTituloInvalido"
-// Interfaces
-import TarefaProps from "../interfaces/TarefaProps"
 
-export default class Tarefa extends Entidade implements TarefaProps {
+export default class Tarefa extends Entidade {
   private _titulo: string
   private _dataDeCriacao: Data
   private _estaCompleto: boolean

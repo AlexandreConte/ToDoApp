@@ -1,5 +1,5 @@
 export default class ErroTarefaNaoEncontrada extends Error {
-  constructor() {
-    super("Tarefa não encontrada! Retornando...")
+  constructor(mensagem?: string) {
+    super("Tarefa não encontrada!\n" + mensagem)
   }
 }
